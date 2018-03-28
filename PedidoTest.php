@@ -13,8 +13,8 @@ class PedidoTest extends Testcase
 		$this->estoque = $this->getMockBuilder('Estoque')->getMock();
 
 		
-		$this->estoque->add('Blusa X',10);
-		$this->estoque->add('Blusa Y',5);
+		//$this->estoque->add('Blusa X',10);
+		//$this->estoque->add('Blusa Y',5);
 	
 	}
 
@@ -49,7 +49,25 @@ class PedidoTest extends Testcase
 		
 	}
 
+	public function testNaoDeveFecharPedido(){
 
+		$item = "Blusa Y";
+		$qtd  = 7;
+
+		$this->estoque->expects( $this->once())
+			->method('get')
+			->with($this->equalTo($item))
+			->will($this->returnValue(0));
+
+			$this->estoque->expects( $this->never() )
+			->method('remove');
+
+		$pedido= new Pedido($item, $qtd);
+		$pedido->fechar($this->estoque);
+
+		$this->assertFalse($pedido->isFinalizado());
+
+	}
 
 
 }
